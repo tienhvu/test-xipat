@@ -1,0 +1,25 @@
+
+.folder-item {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.25rem 0.5rem;
+    cursor: pointer;
+}
+
+.folder-item:hover {
+    background-color: #37373d;
+}
+  
+.folder-item--hovered {
+    background-color: #f3f4f6;
+}
+
+.folder-item__icon {
+    font-size: 16px;
+    color: #d7b579;
+}
+
+.folder-item__name {
+    font-size: 0.875rem;
+}
