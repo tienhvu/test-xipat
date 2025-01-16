@@ -1,0 +1,44 @@
+.folder-item {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.25rem 0.5rem;
+    cursor: pointer;
+}
+
+.folder-item:hover {
+    background-color: #37373d;
+}
+  
+.folder-item--hovered {
+    background-color: #f3f4f6;
+}
+
+.folder-item__icon {
+    font-size: 16px;
+    color: #d7b579;
+}
+
+.folder-item__name {
+    font-size: 0.875rem;
+}
+
+.context-menu {
+    position: fixed;
+    background-color: #37373d;
+    color: white;
+    min-width: 150px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+    border-radius: 4px;
+    z-index: 1000;
+  }
+
+.menu-item {
+    padding: 8px 16px;
+    border-radius: 8px;
+    cursor: pointer;
+}
+
+.menu-item:hover {
+    background: #0aaceb;
+}
