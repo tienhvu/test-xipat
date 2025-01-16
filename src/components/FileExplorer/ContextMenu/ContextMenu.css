@@ -1,0 +1,18 @@
+.temp-folder {
+    display: flex;
+    align-items: center;
+    margin-top: 5px;
+  }
+  
+  .folder-icon {
+    margin-right: 8px;
+  }
+  
+  .folder-input {
+    border: 1px solid #ccc;
+    padding: 4px;
+    font-size: 14px;
+    border-radius: 4px;
+    width: 150px;
+  }
+  

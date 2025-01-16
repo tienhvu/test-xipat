@@ -1,37 +1,59 @@
-import { useState } from 'react';
 import FileItem from './FileItem/FileItem';
 import FolderItem from './FolderItem/FolderItem';
-import { fileStructure } from './../../constants/fileStructure';
-import './style.css';
+import { useFileExplorer } from './../../hooks/useFileExplorer';
+import './FileExplorer.css';
+import { useState, useEffect } from 'react';
+
+import ContextMenu from './ContextMenu/ContextMenu';
 
 const FileExplorer = () => {
-  const [expandedFolders, setExpandedFolders] = useState(new Set());
-  const [selectedFile, setSelectedFile] = useState(null);
-  const [selectedContent, setSelectedContent] = useState(null);
+  const {
+    fileStructure,
+    expandedFolders,
+    selectedFile,
+    selectedContent,
+    isFile,
+    toggleFolder,
+    handleFileSelect,
+    addNewFile,
+    addNewFolder,
+    deleteItem
+  } = useFileExplorer();
 
-  const isFile = (item) => Object.keys(item).length === 0;
+  
+  const [contextMenu, setContextMenu] = useState({
+    show: false,
+    type: null,
+    position: { top: 0, left: 0 },
+    path: null
+  });
 
-  const toggleFolder = (path) => {
-    const newExpanded = new Set(expandedFolders);
-    if (newExpanded.has(path)) {
-      newExpanded.delete(path);
-    } else {
-      newExpanded.add(path);
+  useEffect(() => {
+    if (contextMenu.show) {
+      const handleClickOutside = () => {
+        setContextMenu(prev => ({ ...prev, show: false }));
+      };
+      document.addEventListener('click', handleClickOutside);
+      return () => document.removeEventListener('click', handleClickOutside);
     }
-    setExpandedFolders(newExpanded);
-  };
+  }, [contextMenu.show]);
 
-  const handleFileSelect = (path) => {
-    setSelectedFile(path);
-    setSelectedContent(`File Content: ${path}`);
+  const handleContextMenu = (e, path, type) => {
+    e.preventDefault();
+    setContextMenu({
+      show: true,
+      type,
+      position: { top: e.clientY, left: e.clientX },
+      path
+    });
   };
 
   const renderItem = (structure, path = '', depth = 0) => {
     return Object.entries(structure).map(([name, content]) => {
       const fullPath = path ? `${path}/${name}` : name;
       const isExpandedFolder = expandedFolders.has(fullPath);
-
-      if (isFile(content)) {
+  
+      if (isFile(content, name)) {
         return (
           <FileItem
             key={fullPath}
@@ -39,11 +61,12 @@ const FileExplorer = () => {
             path={fullPath}
             isSelected={selectedFile === fullPath}
             onSelect={handleFileSelect}
+            onContextMenu={(e) => handleContextMenu(e, fullPath, 'file')}
             depth={depth}
           />
         );
       }
-
+  
       return (
         <div key={fullPath}>
           <FolderItem
@@ -51,6 +74,7 @@ const FileExplorer = () => {
             path={fullPath}
             isExpanded={isExpandedFolder}
             onToggle={toggleFolder}
+            onContextMenu={(e) => handleContextMenu(e, fullPath, 'folder')}
             depth={depth}
           />
           {isExpandedFolder && renderItem(content, fullPath, depth + 1)}
@@ -72,6 +96,17 @@ const FileExplorer = () => {
           <div className="file-explorer__content-text">{selectedContent}</div>
         </div>
       )}
+
+      <ContextMenu
+        show={contextMenu.show}
+        position={contextMenu.position}
+        type={contextMenu.type}
+        path={contextMenu.path}
+        addNewFile={addNewFile}
+        addNewFolder={addNewFolder}
+        deleteItem={deleteItem}
+        onClose={() => setContextMenu(prev => ({ ...prev, show: false }))}
+      />
     </div>
   );
 };
